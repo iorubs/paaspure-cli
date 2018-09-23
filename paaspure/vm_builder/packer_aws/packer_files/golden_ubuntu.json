@@ -1,0 +1,31 @@
+{
+    "variables": {
+        "instance_type": "",
+        "ssh_username": "",
+        "access_key": "{{env `AWS_ACCESS_KEY`}}",
+        "secret_key": "{{env `AWS_SECRET_KEY`}}"
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "name": "golden-ubuntu",
+        "access_key": "{{user `access_key`}}",
+        "secret_key": "{{user `secret_key`}}",
+        "region": "eu-west-1",
+        "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+        },
+        "instance_type": "{{user `instance_type`}}",
+        "ssh_username": "{{user `ssh_username`}}",
+        "ami_name": "golden-host",
+        "ami_description": "Fresh Ubuntu installation.",
+        "tags":{
+            "Name": "paaspure_ubuntu_16_04"
+        }
+    }]
+}

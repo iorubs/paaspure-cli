@@ -1,0 +1,16 @@
+# {{ module_capitalized }}
+
+New auto generated module.
+
+### Usage
+
+```bash
+usage: paaspure {{ module }} COMMAND
+
+Options:
+  -h, --help  show this help message and exit
+
+Commands:
+  {run}
+    run       Run the {{ module_capitalized }} module.
+```

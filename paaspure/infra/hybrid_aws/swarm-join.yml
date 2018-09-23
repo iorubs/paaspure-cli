@@ -1,0 +1,31 @@
+# NOTE: sudo apk add sudo if required to workaround issue https://github.com/docker/for-azure/issues/10
+# Remove it once the proper fix is implemented
+- name: Install Ansible Prereqs
+  hosts: swarm-master:swarm-workers
+  # hosts: swarm-master:swarm-managers:swarm-nodes
+  gather_facts: no
+  tasks:
+    - raw: "sudo apk update && sudo apk add sudo && sudo apk add python py-pip"
+
+- name: Fecth tokens from Swarm Master
+  hosts: swarm-master
+  gather_facts: yes
+  tasks:
+    - command: "docker swarm join-token -q manager"
+      register: swarm_manager_token
+    - set_fact: swarmtokenmanager="{{swarm_manager_token.stdout}}"
+    - command: "docker swarm join-token -q worker"
+      register: swarm_worker_token
+    - set_fact: swarmtokenworker="{{swarm_worker_token.stdout}}"
+
+# - name: Join Swarm Manager
+#   hosts: swarm-managers
+#   gather_facts: yes
+#   tasks:
+#   - command: "docker swarm join --advertise-addr {{inventory_hostname}} --token {{hostvars[groups['swarm-master'][0]].swarmtokenmanager}} {{hostvars[groups['swarm-master'][0]].inventory_hostname}}:2377"
+
+- name: Join Swarm Worker
+  hosts: swarm-workers
+  gather_facts: yes
+  tasks:
+  - command: "docker swarm join --advertise-addr {{inventory_hostname}} --token {{hostvars[groups['swarm-master'][0]].swarmtokenworker}} {{hostvars[groups['swarm-master'][0]].inventory_hostname}}:50101"

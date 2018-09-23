@@ -1,0 +1,11 @@
+FROM mullnerz/ansible-playbook
+
+LABEL maintainer "ruben.vasconcelos3@mail.dcu.ie"
+
+WORKDIR /ansible/playbooks
+COPY . .
+
+ENV ANSIBLE_HOST_KEY_CHECKING False
+
+ENTRYPOINT ["ansible-playbook"]
+CMD ["--version"]

@@ -1,0 +1,21 @@
+# Build files and dirs
+build/
+*.pyc
+__pycache__
+*.egg-info
+dist
+
+# Docker related files
+Dockerfile*
+
+# Testing
+htmlcov
+.pytest_cache
+.coverage
+
+# Other
+.git
+.gitignore
+.gitlab-ci.yml
+gitlab-runner/
+docs/

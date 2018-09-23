@@ -1,0 +1,54 @@
+version: 1
+
+hub: 'http://10.216.18.67:8080'
+
+credentials:
+  private_key: /path/to/keyname.pem
+  aws_access_key: secret
+  aws_secret_key: qsecret
+
+modules:
+  infra:
+    components:
+      terraform_aws:
+        stack_name: "PaasPureDocker"
+        region: "eu-west-1"
+        parameters:
+          KeyName: "keyname"
+          ManagerSize: 1
+          ManagerInstanceType: "t2.micro"
+          ClusterSize: 2
+          InstanceType: "t2.micro"
+          EnableCloudWatchLogs: "no"
+
+  orchestrator:
+    components:
+      swarm_aws:
+        user: docker
+        bind_port: 2374
+        region: eu-west-1
+        tags:
+          key: swarm-node-type
+          manager_value: manager
+          worker_value: worker
+
+  network:
+    orchestrator: orchestrator
+    components:
+      traefik:
+
+  log_management:
+    orchestrator: orchestrator
+    components:
+      elk_stack:
+
+  monitoring:
+    orchestrator: orchestrator
+    components:
+      prom_stack:
+
+  deployer:
+    orchestrator: orchestrator
+    components:
+      portainer:
+      registry:

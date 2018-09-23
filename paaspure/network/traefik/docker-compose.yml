@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  traefik:
+    image: traefik:1.7
+    command: --api --docker --metrics.prometheus --metrics.prometheus.entryPoint="traefik" --docker.swarmmode --docker.watch --docker.domain=demo -l DEBUG
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.role == manager]

@@ -1,0 +1,22 @@
+# -*- coding: utf-8 -*-
+
+import sys
+
+from {{ module }}.argparser import {{ module_capitalized }}Parser
+
+
+class {{ module_capitalized }}:
+    """New auto-generated modulo template."""
+    def __init__(self):
+        {{ module_capitalized }}Parser(self)
+        super({{ module_capitalized }}, self).__init__()
+
+    def execute(self, args):
+        super({{ module_capitalized }}, self).general_execute(args)
+
+    def build(self, args):
+        print('Successfully ran the {{ module }} module.')
+
+
+instance = {{ module_capitalized }}()
+{{ new_line }}

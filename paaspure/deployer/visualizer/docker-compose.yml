@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  visualizer:
+    image: dockersamples/visualizer
+    ports:
+      - 8080/tcp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - traefik_default
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - traefik.backend=visualizer
+        - traefik.port=8080
+        - traefik.frontend.rule=Host:visualizer.demo
+        - traefik.docker.network=traefik_default
+
+networks:
+  traefik_default:
+    external: true

@@ -1,0 +1,6 @@
+# -*- coding: utf-8 -*-
+
+from {{ module }}.module import instance
+
+__all__ = ['instance']
+{{ new_line }}

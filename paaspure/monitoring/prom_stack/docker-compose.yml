@@ -1,0 +1,86 @@
+version: '3.4'
+
+volumes:
+  prometheus:
+  grafana:
+
+services:
+  exporter:
+    image: prom/node-exporter:v0.15.2
+    ports:
+      - '9100'
+    volumes:
+      - /:/rootfs:ro
+      - /sys:/host/sys:ro
+      - /proc:/host/proc:ro
+    command: --collector.filesystem.ignored-mount-points "^/rootfs/(var/lib/docker/)|(run/docker/netns/)|(sys/kernel/debug/).*"
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+  cadvisor:
+    image: google/cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - '8080'
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+  prometheus:
+    image: prom/prometheus:v2.3.2
+    depends_on:
+      - exporter
+    ports:
+      - '9090'
+    networks:
+      - default
+      - traefik_default
+    configs:
+      - source: prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+    volumes:
+      - prometheus:/prometheus:rw
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - traefik.port=9090
+
+  grafana:
+    image: grafana/grafana:5.2.2
+    depends_on:
+      - prometheus
+    ports:
+      - '3000'
+    networks:
+      - default
+      - traefik_default
+    volumes:
+      - grafana:/var/lib/grafana:rw
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - traefik.backend=monitoring
+        - traefik.port=3000
+        - traefik.frontend.rule=Host:monitoring.demo
+        - traefik.docker.network=traefik_default
+
+configs:
+  prometheus.yml:
+    file: ./config/prometheus.yml
+
+networks:
+  traefik_default:
+    external: true

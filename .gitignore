@@ -1,0 +1,19 @@
+# Build files and dirs
+build/
+__pycache__
+*.pyc
+*.egg-info
+dist
+
+# Testing
+htmlcov
+.pytest_cache
+.coverage
+
+# Other
+.DS_Store
+
+# Files with confidential information
+pure*.yml
+*.pem
+*.pub

@@ -1,0 +1,49 @@
+version: 1
+
+hub: 'http://10.216.18.67:8080'
+
+credentials:
+  private_key: /path/to/keyname.pem
+  azure_client_id: secret
+  azure_client_secret: secret
+  azure_tenant_id: secret
+  subscription_id: secret
+  aws_access_key: secret
+  aws_secret_key: secret
+
+modules:
+  infra:
+    components:
+      terraform_azure:
+        stack_name: "PaasPureDocker"
+        resource_group_name: paaspureswarm
+        resource_group_location: "North Europe"
+        parameters:
+          enableExtLogs: "no"
+          linuxSSHPublicKey: /path/to/keyname.pub
+          managerCount: 1
+          managerVMSize: "Standard_D1_v2"
+          linuxWorkerCount: 1
+          linuxWorkerVMSize: "Standard_D1_v2"
+          swarmName: "dockerswarm"
+      hybrid_aws:
+        aws_region: "eu-west-1"
+        aws_key_name: "keyname"
+        ssh_user: "docker"
+        worker_instance_type: "t2.micro"
+        worker_count: 3
+        orchestrator_params:
+          name: 'orchestrator'
+          component: 'swarm_azure'
+          resource_group_name: paaspureswarm
+          swarmName: "dockerswarm"
+
+  orchestrator:
+    components:
+      swarm_azure:
+        resource_group_name: paaspureswarm
+        swarmName: "dockerswarm"
+        user: docker
+        bind_port: 2374
+
+  ... Other Pure objects ...

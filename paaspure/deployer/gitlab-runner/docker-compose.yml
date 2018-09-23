@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  gitlab-runner:
+    build: .
+    volumes:
+      - ./config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock

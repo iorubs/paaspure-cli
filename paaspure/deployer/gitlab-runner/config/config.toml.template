@@ -1,0 +1,9 @@
+concurrent = 1
+check_interval = 0
+
+[[runners]]
+  name = "PaaSPure Runner"
+  url = "INSERT URL HERE"
+  token = "INSERT YOUR TOKEN HERE"
+  executor = "shell"
+  [runners.cache]

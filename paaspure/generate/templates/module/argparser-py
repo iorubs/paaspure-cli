@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+
+from paaspure.argparser import paaSPureParser
+
+
+class {{ module_capitalized }}Parser:
+    """New auto-generated modulo argparse template."""
+    def __init__(self, module):
+        module.parser = paaSPureParser.extend_parser(
+            'paaspure {{ module }} COMMAND',
+            '{{ module }}',
+            'New auto-generated module.'
+        )
+
+        sub_parsers = module.parser.add_subparsers(
+            title='Commands',
+            dest='subcommand'
+        )
+
+        module.run_parser = sub_parsers.add_parser(
+            'build',
+            help='Run the {{ module_capitalized }} module.',
+            usage='paaspure {{ module }} run'
+        )
+
+        module.run_parser._optionals.title = 'Options'
+        module.run_parser._positionals.title = 'Commands'
+        module.run_parser.set_defaults(parser=True)
+
+        super({{ module_capitalized }}Parser, self).__init__()
+{{ new_line }}

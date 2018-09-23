@@ -1,0 +1,103 @@
+version: '3.4'
+
+# volumes:
+#   mariadb:
+
+services:
+  registry:
+    image: registry:2.6
+    networks:
+      - traefik_default
+      - default
+#     secrets:
+#       - cert.pem
+#     environment:
+#       REGISTRY_AUTH_TOKEN_REALM: http://portus.demo/v2/token
+#       REGISTRY_AUTH_TOKEN_SERVICE: registry.demo
+#       REGISTRY_AUTH_TOKEN_ISSUER: portus.demo
+#       REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE: /run/secrets/cert.pem
+#       REGISTRY_NOTIFICATIONS_ENDPOINTS: >
+#         - name: portus
+#           url: http://portus.demo/v2/webhooks/events
+#           timeout: 500ms
+#           threshold: 5
+#           backoff: 1s
+    deploy:
+      replicas: 1
+      labels:
+        - traefik.backend=registry
+        - traefik.port=5000
+        - traefik.frontend.rule=Host:registry.demo
+        - traefik.docker.network=traefik_default
+#
+#   mariadb:
+#     image: mariadb:10.3
+#     networks:
+#       - default
+#     ports:
+#       - '3306'
+#     volumes:
+#       - mariadb:/var/lib/mysql
+#     environment:
+#       MYSQL_ROOT_PASSWORD: dbSecretPass
+#
+#   portus:
+#     image: opensuse/portus:head
+#     depends_on:
+#       - mariadb
+#     networks:
+#       - traefik_default
+#       - default
+#     secrets:
+#       - key.pem
+#     environment:
+#       PORTUS_MACHINE_FQDN_VALUE: portus.demo
+#       PORTUS_LOG_LEVEL: debug
+#       RAILS_SERVE_STATIC_FILES: 'true'
+#       PORTUS_DB_HOST: mariadb
+#       PORTUS_DB_USERNAME: root
+#       PORTUS_DB_PASSWORD: dbSecretPass
+#       PORTUS_DB_DATABASE: portus
+#       PORTUS_DELETE_ENABLED: 'true'
+#       PORTUS_CHECK_SSL_USAGE_ENABLED: 'false'
+#       PORTUS_SECRET_KEY_BASE: b494a25faa8d22e430e843e220e424e10ac84d2ce0e64231f5b636d21251eb6d267adb042ad5884cbff0f3891bcf911bdf8abb3ce719849ccda9a4889249e5c2
+#       PORTUS_KEY_PATH: /run/secrets/key.pem
+#       PORTUS_PASSWORD: portusSecretPass
+#     deploy:
+#       replicas: 1
+#       labels:
+#         - traefik.backend=portus
+#         - traefik.port=3000
+#         - traefik.frontend.rule=Host:portus.demo
+#         - traefik.docker.network=traefik_default
+#
+#   portus-background:
+#     image: opensuse/portus:head
+#     depends_on:
+#       - portus
+#       - mariadb
+#     networks:
+#       - default
+#     secrets:
+#       - key.pem
+#     environment:
+#       PORTUS_MACHINE_FQDN_VALUE: portus.demo
+#       PORTUS_DB_HOST: mariadb
+#       PORTUS_DB_USERNAME: root
+#       PORTUS_DB_PASSWORD: dbSecretPass
+#       PORTUS_DB_DATABASE: portus
+#       PORTUS_DELETE_ENABLED: 'true'
+#       PORTUS_KEY_PATH: /run/secrets/key.pem
+#       PORTUS_SECRET_KEY_BASE: b494a25faa8d22e430e843e220e424e10ac84d2ce0e64231f5b636d21251eb6d267adb042ad5884cbff0f3891bcf911bdf8abb3ce719849ccda9a4889249e5c2
+#       PORTUS_PASSWORD: portusSecretPass
+#       PORTUS_BACKGROUND: 'true'
+#
+# secrets:
+#   cert.pem:
+#     file: ./certs/cert.pem
+#   key.pem:
+#     file: ./certs/key.pem
+
+networks:
+  traefik_default:
+    external: true

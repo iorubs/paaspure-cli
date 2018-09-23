@@ -1,0 +1,79 @@
+version: '3.4'
+
+volumes:
+  es_data:
+
+services:
+  logspout:
+    image: gliderlabs/logspout
+    command: 'syslog+tcp://logstash:5000'
+    environment:
+      - LOGSPOUT=ignore
+    networks:
+      - default
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+  logstash:
+    image: devopz/logstash-json-traefik:6.2.3
+    environment:
+      - LOGSPOUT=ignore
+      - DROP_NON_JSON=false
+      - STDOUT=true
+    ports:
+      - 5000
+    networks:
+      - default
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.3
+    networks:
+      - traefik_default
+      - default
+    environment:
+      - LOGSPOUT=ignore
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - traefik.backend=logging
+        - traefik.port=5601
+        - traefik.frontend.rule=Host:logging.demo
+        - traefik.docker.network=traefik_default
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.3
+    networks:
+      - default
+    ports:
+      - 9200
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - LOGSPOUT=ignore
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+      mode: replicated
+      replicas: 1
+
+networks:
+  traefik_default:
+    external: true
+  default:
+    external: false

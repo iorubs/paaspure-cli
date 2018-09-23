@@ -1,0 +1,26 @@
+version: '3.4'
+
+volumes:
+  jenkins_data:
+
+services:
+  jenkins:
+    image: csanchez/jenkins-swarm
+    ports:
+      - 8081:8080
+    restart: always
+    volumes:
+      - jenkins_data:/var/jenkins_home
+
+  worker:
+    image: csanchez/jenkins-swarm-slave
+    command: -username jenkins -password jenkins -executors 1
+    environment:
+      - "JENKINS_PORT_8080_TCP_ADDR=jenkins"
+      - "JENKINS_PORT_8080_TCP_PORT=8081"
+
+# networks:
+#   traefik_default:
+#     external: true
+#   registry_default:
+#     external: true
