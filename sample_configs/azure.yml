@@ -1,6 +1,6 @@
 version: 1
 
-hub: 'http://10.216.18.67:8080'
+hub: 'http://172.17.0.1:8080'
 
 credentials:
   private_key: /path/to/keyname.pem
