@@ -1,7 +1,8 @@
 # PaaSPure CLI
 
->  This is was created as part of my computing masters practicum. The PaaSPure CLI was intended to be used for building/deploying PaaS platforms based on user supplied configs. The cli tool will still work without the HUB as users may still pull directly from a git repo.
+>  This is was created as part of my computing masters practicum. The PaaSPure CLI was intended to be used for building/deploying PaaS platforms based on user supplied configs.
 
+The cli tool will still works without the HUB as users may still pull directly from a git repo.
 
 #### Build
 
